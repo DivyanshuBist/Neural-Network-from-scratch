@@ -1,4 +1,5 @@
 #pragma once
+#include<stdlib.h>
 #include<iostream>
 #include<vector>
 #include<assert.h>
@@ -20,7 +21,7 @@ class Matrix{
 Matrix::Matrix(int rows,int cols){
 	_row=rows;
 	_col=cols;
-	mat.resize(rows,vector<float>(cols,0.00f));
+	mat.resize(rows,vector<float>(cols,float(rand()%3-1)));
 }
 void Matrix::mult(const Matrix &M2,Matrix & result){
 	assert(_col==M2._row && _row==result._row && result._col==M2._col);
@@ -53,7 +54,7 @@ void Matrix::transpose(Matrix &result){
 	Matrix temp(_col,_row);
 	for(int i=0;i<_row;i++){
 		for(int j=0;j<_col;j++){
-			temp.mat[i][j]=mat[j][i];
+			temp.mat[j][i]=mat[i][j];
 		}
 	}
 	result=temp;
