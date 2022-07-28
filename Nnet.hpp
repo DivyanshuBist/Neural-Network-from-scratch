@@ -5,7 +5,7 @@
 #include<math.h>
 using namespace std;
 class Neural_Network{
-	float learning_rate=0.05;
+	float learning_rate=0.5;
 	void backpropagate(const vector<float>&output);
         public:
                 vector<Matrix> layer;
@@ -49,26 +49,18 @@ void Neural_Network::feedforward(const vector<float>& input,const vector<float>&
 	}
 
 	
-	for(int i=0;i<Weights.size();i++){
-		Weights[i].print();
-		cout<<"\n";
-	}
 
 	backpropagate(output);
-	for(int i=0;i<Weights.size();i++){
-		Weights[i].print();
-		cout<<"\n";
-	}
 	
 }
 void Neural_Network::backpropagate(const vector<float>&target){
 	float error=0.0f;
-	int i=0;
-	
+	cout<<" target " ;
+	for(float i:target) cout<<i<<"  ";
+	cout<<"\n";
 	for(int n=0;n<layer.back()._row;n++){
 //		cout<<target[i]<<" "<<layer.back().mat[n][0]<<"\n";
-		error+=0.5*pow((target[i]-layer.back().mat[n][0]),2);
-		i++;
+		error+=0.5*pow((target[n]-layer.back().mat[n][0]),2);
 	}
 	cout<<"actual values: ";
 	for(int n=0;n<layer.back()._row;n++){
@@ -83,16 +75,19 @@ void Neural_Network::backpropagate(const vector<float>&target){
 	cout<<"error is :"<<error<<"\n";
 	for(int n=0;n<layer.back()._row;n++){
 		float val=layer.back().mat[n][0];
-		delta.back().mat[n][0]=(target[i]-val);
-		delta.back().mat[n][0]*=(target[i]>val)?-1:1;
+		delta.back().mat[n][0]=-(target[n]-val);
+	//	delta.back().mat[n][0]*=(target[i]>val)?-1:1;
+		cout<<delta.back().mat[n][0]<<" ---  "<<target[n]<<" -  "<<val<<" ";
 		bias.back().mat[n][0]-=delta.back().mat[n][0];
 	}
+	cout<<"\n";
 	for(int i=layer.size()-2;i>=0;i--){
 	  Matrix wt_updation(layer[i+1]._row,layer[i]._row);
 	  Matrix l_tpose(1,layer[i]._row);
 	  layer[i].transpose(l_tpose);
 	  delta[i+1].mult(l_tpose,wt_updation);
 	  wt_updation.mult(-learning_rate,wt_updation);
+
 	  for(int r=0;r<Weights[i]._row;r++){
 	  	for(int c=0;c<Weights[i]._col;c++){
 			wt_updation.mat[r][c]*=layer[i+1].mat[r][0]*(1-layer[i+1].mat[r][0]);
@@ -109,9 +104,9 @@ void Neural_Network::backpropagate(const vector<float>&target){
 	  bias_upd.mult(-learning_rate,bias_upd);
 	  bias[i].add(bias_upd,bias[i]);
 	}
-	cout<<"delta";
-	for(int i=0;i<delta.size();i++){
-		delta[i].print();
-		cout<<"\n";
-	}
+//	cout<<"delta";
+//	for(int i=0;i<delta.size();i++){
+//		delta[i].print();
+//		cout<<"\n";
+//	}
 }
